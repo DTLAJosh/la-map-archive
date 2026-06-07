@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Map Resources — The Gray-Emmer Collection</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment:       #f2ead8;
+    --parchment-dark:  #e4d8be;
+    --parchment-deep:  #cfc0a0;
+    --ink:             #2a1f0e;
+    --ink-faded:       #5c4a2f;
+    --red-ink:         #8b1a1a;
+    --gold:            #9a7c3a;
+    --rule:            #a08050;
+    --card-bg:         #f8f2e4;
+    --shadow:          rgba(42,31,14,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--parchment);
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: 0.5;
+  }
+
+  .page-border {
+    position: fixed; inset: 10px;
+    border: 1px solid var(--rule);
+    pointer-events: none; z-index: 100;
+    opacity: 0.35;
+  }
+  .page-border::before {
+    content: '';
+    position: absolute; inset: 4px;
+    border: 1px solid var(--rule);
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    border-bottom: 1px solid var(--rule);
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+  }
+  .nav-links {
+    display: flex; gap: 28px; list-style: none;
+  }
+  .nav-links a {
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--ink-faded); text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--red-ink); }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 56px 40px 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .header-rule {
+    display: flex; align-items: center; gap: 16px;
+    justify-content: center; margin-bottom: 20px;
+  }
+  .header-rule::before, .header-rule::after {
+    content: ''; flex: 1; max-width: 180px;
+    height: 1px; background: var(--rule);
+  }
+  .header-ornament { font-size: 18px; color: var(--red-ink); letter-spacing: 6px; }
+
+  .page-label {
+    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--red-ink); margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700; line-height: 1.1; color: var(--ink);
+    margin-bottom: 14px;
+  }
+  h1 em { font-style: italic; color: var(--ink-faded); }
+
+  .header-sub {
+    font-family: 'IM Fell English', serif;
+    font-style: italic; font-size: 1rem;
+    color: var(--ink-faded); letter-spacing: 0.02em;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 56px 40px 80px;
+  }
+
+  .section-intro {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--ink-faded);
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--parchment-dark);
+  }
+
+  /* ── RESOURCE GROUPS ── */
+  .resource-group {
+    margin-bottom: 48px;
+  }
+  .group-label {
+    font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--rule); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .group-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--parchment-deep);
+  }
+
+  /* ── RESOURCE CARDS ── */
+  .resource-list {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+
+  .resource-item {
+    background: var(--card-bg);
+    border: 1px solid var(--parchment-deep);
+    padding: 20px 24px;
+    display: flex; align-items: flex-start; gap: 20px;
+    text-decoration: none; color: inherit;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    position: relative;
+  }
+  .resource-item:hover {
+    transform: translateX(4px);
+    box-shadow: -4px 0 0 var(--red-ink);
+    border-color: var(--parchment-deep);
+    z-index: 1;
+  }
+
+  .resource-num {
+    font-size: 10px; letter-spacing: 1px;
+    color: var(--rule); font-family: 'Libre Baskerville', serif;
+    min-width: 24px; padding-top: 2px;
+  }
+
+  .resource-body { flex: 1; }
+
+  .resource-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-weight: 600;
+    color: var(--ink); margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .resource-desc {
+    font-size: 0.78rem; line-height: 1.6;
+    color: var(--ink-faded);
+  }
+
+  .resource-arrow {
+    color: var(--parchment-deep);
+    font-size: 16px; padding-top: 2px;
+    transition: color 0.15s, transform 0.15s;
+  }
+  .resource-item:hover .resource-arrow {
+    color: var(--red-ink);
+    transform: translateX(3px);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 28px 40px;
+    text-align: center;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--rule);
+  }
+  footer a { color: var(--red-ink); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="page-border"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-brand">The Gray-Emmer Collection</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Collection</a></li>
+    <li><a href="resources.html" class="active">Map Resources</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<header>
+  <div class="header-rule">
+    <div class="header-ornament">✦ ✦ ✦</div>
+  </div>
+  <p class="page-label">Reference &amp; Research</p>
+  <h1>Map <em>Resources</em></h1>
+  <p class="header-sub">Favourite sites for finding information on historical maps of Los Angeles</p>
+</header>
+
+<!-- MAIN -->
+<main>
+
+  <p class="section-intro">
+    A curated list of digital archives, dealers, and research collections most useful for studying 
+    the cartographic history of Los Angeles. These are the resources I return to most when 
+    researching pieces for the collection.
+  </p>
+
+  <!-- LIBRARIES & ARCHIVES -->
+  <div class="resource-group">
+    <div class="group-label">Libraries &amp; Archives</div>
+    <div class="resource-list">
+
+      <a class="resource-item" href="http://www.lapl.org/collections-resources/visual-collections/map-collection" target="_blank" rel="noopener">
+        <span class="resource-num">01</span>
+        <div class="resource-body">
+          <div class="resource-name">Los Angeles Public Library — Visual Map Collection</div>
+          <div class="resource-desc">The LAPL's digitized map holdings covering Los Angeles city and county, searchable by date, neighborhood, and subject.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource-item" href="http://hdl.huntington.org/cdm/landingpage/collection/p15150coll4" target="_blank" rel="noopener">
+        <span class="resource-num">02</span>
+        <div class="resource-body">
+          <div class="resource-name">The Huntington Library — Digital Map Collection</div>
+          <div class="resource-desc">High-resolution digitized maps from the Huntington's renowned cartographic holdings, with strong Southern California representation.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource-item" href="http://cdnc.ucr.edu/cgi-bin/cdnc?a=p&p=home&e=-------en--20--1--txt-txIN-------" target="_blank" rel="noopener">
+        <span class="resource-num">03</span>
+        <div class="resource-body">
+          <div class="resource-name">California Digital Newspaper Collection</div>
+          <div class="resource-desc">Full-text searchable archive of California newspapers — invaluable for researching the historical context of maps and their publication.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource-item" href="http://waterandpower.org/museum/Early_LA_Buildings%20%281900%20-%201925%29.html" target="_blank" rel="noopener">
+        <span class="resource-num">04</span>
+        <div class="resource-body">
+          <div class="resource-name">LA DWP Museum — Early LA Buildings Photo Collection</div>
+          <div class="resource-desc">Photographs of Los Angeles buildings from 1900–1925, useful for cross-referencing structures shown on period maps.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- DIGITAL MAP COLLECTIONS -->
+  <div class="resource-group">
+    <div class="group-label">Digital Map Collections</div>
+    <div class="resource-list">
+
+      <a class="resource-item" href="http://www.davidrumsey.com/" target="_blank" rel="noopener">
+        <span class="resource-num">05</span>
+        <div class="resource-body">
+          <div class="resource-name">The David Rumsey Map Collection</div>
+          <div class="resource-desc">Over 150,000 digitized historical maps online, including a substantial Baist real estate atlas series and many Los Angeles-area items. The single most useful resource for comparative research.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource-item" href="http://www.oldmapsonline.org/#bbox=-110.00061,-51.981497,119.921265,72.001067&q=&datefrom=1000&dateto=2010" target="_blank" rel="noopener">
+        <span class="resource-num">06</span>
+        <div class="resource-body">
+          <div class="resource-name">Old Maps Online — Interactive Map Search</div>
+          <div class="resource-desc">A geographical search engine aggregating digitized map holdings from institutions worldwide, searchable by location and date range.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource-item" href="http://www.historicmapworks.com/GoogleSearchResults.php?q=los%20angeles" target="_blank" rel="noopener">
+        <span class="resource-num">07</span>
+        <div class="resource-body">
+          <div class="resource-name">Historic Map Works</div>
+          <div class="resource-desc">Large database of scanned historical real estate atlases and plat maps, with good coverage of Los Angeles county and city surveys.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- DEALERS & TRADE -->
+  <div class="resource-group">
+    <div class="group-label">Dealers &amp; Trade</div>
+    <div class="resource-list">
+
+      <a class="resource-item" href="http://www.rare-maps.com/search.cfm?pt=Maps&s=los%20angeles" target="_blank" rel="noopener">
+        <span class="resource-num">08</span>
+        <div class="resource-body">
+          <div class="resource-name">Art Source International</div>
+          <div class="resource-desc">Rare map dealer with a searchable inventory — filter by Los Angeles to find antique maps available for purchase.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource-item" href="http://www.antiquemapsandglobes.com/maps_found_list.php?Geography=&Subject=&Type=&Coloring=&Title=&Keywords=los+angeles&Author=&Publisher=&Year=1800-1930" target="_blank" rel="noopener">
+        <span class="resource-num">09</span>
+        <div class="resource-body">
+          <div class="resource-name">Murray Hudson — Antique Maps, Globes &amp; Prints</div>
+          <div class="resource-desc">Specialist dealer in antique maps and globes, pre-filtered here for Los Angeles items dated 1800–1930.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource-item" href="http://www.raremaps.com/" target="_blank" rel="noopener">
+        <span class="resource-num">10</span>
+        <div class="resource-body">
+          <div class="resource-name">Barry Lawrence Ruderman Antique Maps</div>
+          <div class="resource-desc">One of the leading dealers in antique cartography, with an extensive searchable online inventory and deep expertise in American maps.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- REFERENCE -->
+  <div class="resource-group">
+    <div class="group-label">Reference &amp; Scholarship</div>
+    <div class="resource-list">
+
+      <a class="resource-item" href="http://www.bigmapblog.com/tag/los-angeles/" target="_blank" rel="noopener">
+        <span class="resource-num">11</span>
+        <div class="resource-body">
+          <div class="resource-name">The Big Map Blog — Los Angeles</div>
+          <div class="resource-desc">A blog devoted to historical maps, with a dedicated Los Angeles tag covering notable items and cartographic curiosities.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+      <a class="resource-item" href="http://www.californiamapsociety.org/wp-content/uploads/2013/11/OPNo3.pdf" target="_blank" rel="noopener">
+        <span class="resource-num">12</span>
+        <div class="resource-body">
+          <div class="resource-name">California Map Society — List of Printed Maps of California</div>
+          <div class="resource-desc">A scholarly checklist of printed California maps, useful for dating and attributing items in the collection.</div>
+        </div>
+        <span class="resource-arrow">→</span>
+      </a>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p>The Gray-Emmer Collection &nbsp;·&nbsp; Pre-1930 Los Angeles Maps &amp; Ephemera &nbsp;·&nbsp; <a href="index.html">View the Collection</a></p>
+</footer>
+
+</body>
+</html>
