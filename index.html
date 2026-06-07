@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Los Angeles Cartographic Archive — Pre-1930 Collection</title>
+<title>The Gray-Emmer Collection</title>
   <!-- To add images: place scans in the images/ folder and set imageUrl: "images/your-file.jpg" for each item -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
@@ -316,13 +316,6 @@
   .list-view .card-body { flex: 1; }
   .list-view .card-desc { -webkit-line-clamp: 2; }
   .list-view .card-footer { padding: 12px 20px; border-top: none; border-left: 1px solid var(--parchment-dark); flex-direction: column; align-items: flex-end; justify-content: center; gap: 8px; min-width: 130px; }
-
-  .card-photo-badge {
-    position: absolute; bottom: 10px; right: 10px;
-    background: rgba(42,31,14,0.75); color: var(--parchment);
-    font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
-    padding: 3px 7px; font-family: 'Libre Baskerville', serif;
-  }
   .card-recent-badge {
     position: absolute; top: 10px; right: 10px;
     background: var(--gold); color: var(--parchment);
@@ -458,7 +451,7 @@
     <div class="header-ornament">✦ ✦ ✦</div>
   </div>
   <p class="collection-label">Private Archive &amp; Repository</p>
-  <h1>Los Angeles<br><em>Cartographic Collection</em></h1>
+  <h1>The Gray-Emmer<br><em>Collection</em></h1>
   <p class="header-sub">Street-level maps &amp; ephemera of the City of Angels, antecedent to 1930</p>
   <div class="header-meta">
     <span id="total-count">61 items catalogued</span>
@@ -508,7 +501,7 @@
       </div>
     </div>
     <div class="lightbox-info">
-      <p class="lb-collection-label">Los Angeles Cartographic Archive</p>
+      <p class="lb-collection-label">The Gray-Emmer Collection</p>
       <h2 class="lb-title" id="lb-title"></h2>
       <p class="lb-year" id="lb-year"></p>
       <div class="lb-rule"></div>
@@ -523,7 +516,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <p>Los Angeles Cartographic Archive &nbsp;·&nbsp; Pre-1930 Street Maps &amp; Ephemera &nbsp;·&nbsp; Private Collection</p>
+  <p>The Gray-Emmer Collection &nbsp;·&nbsp; Pre-1930 Street Maps &amp; Ephemera &nbsp;·&nbsp; Private Collection</p>
 </footer>
 
 <script>
@@ -1504,7 +1497,6 @@ function render() {
           : `<div class="img-placeholder"><div class="map-icon">🗺</div><span>Add scan to images/</span></div>`
         }
         <div class="card-type-badge">${item.type}</div>
-        ${item.photographed ? `<div class="card-photo-badge">📷 Photographed</div>` : ""}
         ${item.recent ? `<div class="card-recent-badge">Recent Acquisition</div>` : ""}
       </div>
       <div class="card-body">
@@ -1537,7 +1529,6 @@ function openLightbox(item) {
     ["Year",         item.year],
     ["Publisher",    item.publisher  || "—"],
     ["Dimensions",   item.dimensions || "—"],
-    ["Photographed", item.photographed ? "Yes — in archive" : "Not yet"],
     ["Accession",    item.accession],
   ];
   document.getElementById("lb-meta").innerHTML = meta
