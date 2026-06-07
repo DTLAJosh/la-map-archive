@@ -45,18 +45,6 @@
   }
 
   /* ── DECORATIVE BORDER ── */
-  .page-border {
-    position: fixed; inset: 10px;
-    border: 1px solid var(--rule);
-    pointer-events: none; z-index: 100;
-    opacity: 0.35;
-  }
-  .page-border::before {
-    content: '';
-    position: absolute; inset: 4px;
-    border: 1px solid var(--rule);
-    opacity: 0.5;
-  }
 
   /* ── HEADER ── */
   header {
@@ -443,7 +431,6 @@
 </head>
 <body>
 
-<div class="page-border"></div>
 
 <!-- NAV -->
 <nav style="border-bottom:1px solid var(--rule); padding:16px 40px; display:flex; align-items:center; justify-content:space-between;">
