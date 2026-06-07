@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Los Angeles Cartographic Archive — Pre-1930 Collection</title>
+  <!-- To add images: place scans in the images/ folder and set imageUrl: "images/your-file.jpg" for each item -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment:       #f2ead8;
+    --parchment-dark:  #e4d8be;
+    --parchment-deep:  #cfc0a0;
+    --ink:             #2a1f0e;
+    --ink-faded:       #5c4a2f;
+    --red-ink:         #8b1a1a;
+    --red-light:       #b33a2a;
+    --gold:            #9a7c3a;
+    --gold-light:      #c4a24a;
+    --rule:            #a08050;
+    --card-bg:         #f8f2e4;
+    --shadow:          rgba(42,31,14,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--parchment);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: 0.5;
+  }
+
+  /* ── DECORATIVE BORDER ── */
+  .page-border {
+    position: fixed; inset: 10px;
+    border: 1px solid var(--rule);
+    pointer-events: none; z-index: 100;
+    opacity: 0.35;
+  }
+  .page-border::before {
+    content: '';
+    position: absolute; inset: 4px;
+    border: 1px solid var(--rule);
+    opacity: 0.5;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 56px 40px 36px;
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .header-rule {
+    display: flex; align-items: center; gap: 16px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .header-rule::before, .header-rule::after {
+    content: '';
+    flex: 1; max-width: 180px;
+    height: 1px; background: var(--rule);
+  }
+  .header-ornament {
+    font-size: 18px; color: var(--red-ink); letter-spacing: 6px;
+  }
+
+  .collection-label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--red-ink); margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--ink-faded);
+  }
+
+  .header-sub {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-faded);
+    margin: 14px 0 20px;
+    letter-spacing: 0.02em;
+  }
+
+  .header-meta {
+    display: flex; justify-content: center; gap: 32px;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-top: 8px;
+  }
+  .header-meta span { display: flex; align-items: center; gap: 6px; }
+  .header-meta span::before { content: '✦'; font-size: 8px; }
+
+  /* ── CONTROLS ── */
+  .controls {
+    max-width: 1200px; margin: 32px auto 0;
+    padding: 0 40px;
+    display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+    justify-content: space-between;
+  }
+
+  .search-wrap {
+    position: relative; flex: 1; min-width: 220px; max-width: 380px;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--parchment-deep);
+    border-radius: 0;
+    padding: 9px 14px 9px 36px;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.82rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .search-wrap input::placeholder { color: var(--ink-faded); opacity: 0.6; }
+  .search-wrap input:focus { border-color: var(--red-ink); }
+  .search-icon {
+    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    color: var(--ink-faded); font-size: 13px; pointer-events: none;
+  }
+
+  .filter-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .tag-btn {
+    background: transparent;
+    border: 1px solid var(--parchment-deep);
+    padding: 6px 14px;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--ink-faded); cursor: pointer;
+    transition: all 0.18s;
+  }
+  .tag-btn:hover, .tag-btn.active {
+    background: var(--red-ink); border-color: var(--red-ink);
+    color: var(--parchment);
+  }
+
+  .view-toggle { display: flex; gap: 4px; }
+  .view-btn {
+    background: transparent; border: 1px solid var(--parchment-deep);
+    padding: 6px 10px; cursor: pointer; color: var(--ink-faded);
+    font-size: 13px; transition: all 0.18s;
+  }
+  .view-btn.active, .view-btn:hover {
+    background: var(--ink); color: var(--parchment);
+    border-color: var(--ink);
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    display: flex; align-items: center; gap: 16px;
+    max-width: 1200px; margin: 28px auto 0; padding: 0 40px;
+  }
+  .section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--parchment-deep);
+  }
+  .divider-text {
+    font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--rule); white-space: nowrap;
+  }
+
+  /* ── GRID ── */
+  .collection-grid {
+    max-width: 1200px; margin: 24px auto 60px;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+  }
+  .collection-grid.list-view {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── CARD ── */
+  .map-card {
+    background: var(--card-bg);
+    border: 1px solid var(--parchment-deep);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    animation: fadeUp 0.5s ease both;
+  }
+  .map-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px var(--shadow);
+  }
+  .map-card::after {
+    content: '';
+    position: absolute; bottom: -3px; right: -3px;
+    width: 100%; height: 100%;
+    border: 1px solid var(--parchment-deep);
+    z-index: -1; transition: transform 0.2s;
+  }
+  .map-card:hover::after { transform: translate(2px, 2px); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .map-card:nth-child(1)  { animation-delay: 0.05s; }
+  .map-card:nth-child(2)  { animation-delay: 0.10s; }
+  .map-card:nth-child(3)  { animation-delay: 0.15s; }
+  .map-card:nth-child(4)  { animation-delay: 0.20s; }
+  .map-card:nth-child(5)  { animation-delay: 0.25s; }
+  .map-card:nth-child(6)  { animation-delay: 0.30s; }
+
+  .card-image {
+    width: 100%; aspect-ratio: 4/3; overflow: hidden;
+    background: var(--parchment-dark);
+    position: relative;
+  }
+  .card-image img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: sepia(20%) contrast(0.95) brightness(0.98);
+    transition: transform 0.4s ease, filter 0.3s;
+  }
+  .map-card:hover .card-image img {
+    transform: scale(1.04);
+    filter: sepia(10%) contrast(1.0) brightness(1.0);
+  }
+
+  /* placeholder image for demo */
+  .card-image .img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--parchment-dark) 0%, var(--parchment-deep) 100%);
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ink-faded); font-family: 'Libre Baskerville', serif;
+  }
+  .img-placeholder .map-icon { font-size: 36px; opacity: 0.4; }
+
+  .card-type-badge {
+    position: absolute; top: 10px; left: 10px;
+    background: var(--red-ink); color: var(--parchment);
+    font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase;
+    padding: 3px 8px;
+    font-family: 'Libre Baskerville', serif;
+  }
+
+  .card-body { padding: 18px 20px 20px; }
+
+  .card-year {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 6px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; font-weight: 600;
+    line-height: 1.3; color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .card-desc {
+    font-size: 0.78rem; line-height: 1.65;
+    color: var(--ink-faded);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--parchment-dark);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .card-tag {
+    font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--rule); border: 1px solid var(--parchment-deep);
+    padding: 2px 7px;
+  }
+  .card-accession {
+    font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--rule); font-family: 'Libre Baskerville', serif;
+    white-space: nowrap;
+  }
+
+  /* ── LIST VIEW ── */
+  .list-view .map-card { display: flex; align-items: stretch; }
+  .list-view .card-image { width: 180px; min-width: 180px; aspect-ratio: unset; }
+  .list-view .card-body { flex: 1; }
+  .list-view .card-desc { -webkit-line-clamp: 2; }
+  .list-view .card-footer { padding: 12px 20px; border-top: none; border-left: 1px solid var(--parchment-dark); flex-direction: column; align-items: flex-end; justify-content: center; gap: 8px; min-width: 130px; }
+
+  .card-photo-badge {
+    position: absolute; bottom: 10px; right: 10px;
+    background: rgba(42,31,14,0.75); color: var(--parchment);
+    font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 3px 7px; font-family: 'Libre Baskerville', serif;
+  }
+  .card-recent-badge {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--gold); color: var(--parchment);
+    font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 3px 8px; font-family: 'Libre Baskerville', serif;
+  }
+  .lightbox {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(20, 14, 5, 0.92);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    padding: 30px;
+    backdrop-filter: blur(3px);
+  }
+  .lightbox.open { opacity: 1; pointer-events: all; }
+
+  .lightbox-inner {
+    background: var(--card-bg);
+    max-width: 900px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    position: relative;
+    transform: scale(0.96);
+    transition: transform 0.3s;
+    border: 1px solid var(--parchment-deep);
+  }
+  .lightbox.open .lightbox-inner { transform: scale(1); }
+
+  @media (max-width: 680px) {
+    .lightbox-inner { grid-template-columns: 1fr; }
+  }
+
+  .lightbox-img {
+    background: var(--parchment-dark);
+    display: flex; align-items: center; justify-content: center;
+    min-height: 320px;
+  }
+  .lightbox-img img {
+    width: 100%; height: 100%; object-fit: contain;
+    filter: sepia(15%);
+  }
+  .lightbox-img .img-placeholder {
+    width: 100%; height: 100%; min-height: 320px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px; color: var(--ink-faded); font-size: 11px;
+    letter-spacing: 2px; text-transform: uppercase;
+    font-family: 'Libre Baskerville', serif;
+  }
+  .lightbox-img .img-placeholder .map-icon { font-size: 56px; opacity: 0.3; }
+
+  .lightbox-info { padding: 36px 32px; }
+
+  .lb-collection-label {
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--red-ink); margin-bottom: 12px;
+  }
+  .lb-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem; font-weight: 700;
+    line-height: 1.2; color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .lb-year {
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px;
+  }
+  .lb-rule { height: 1px; background: var(--parchment-deep); margin: 16px 0; }
+  .lb-desc {
+    font-size: 0.85rem; line-height: 1.75; color: var(--ink-faded);
+    font-family: 'IM Fell English', serif; font-style: italic;
+  }
+  .lb-meta { margin-top: 24px; }
+  .lb-meta-row {
+    display: flex; justify-content: space-between;
+    padding: 7px 0; border-bottom: 1px solid var(--parchment-dark);
+    font-size: 0.75rem;
+  }
+  .lb-meta-key {
+    font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--rule);
+  }
+  .lb-meta-val { color: var(--ink); font-family: 'Libre Baskerville', serif; }
+  .lb-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px; }
+  .lb-tag {
+    font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--rule); border: 1px solid var(--parchment-deep); padding: 3px 9px;
+  }
+
+  .lightbox-close {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--ink); color: var(--parchment);
+    border: none; width: 32px; height: 32px;
+    cursor: pointer; font-size: 16px; display: flex;
+    align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .lightbox-close:hover { background: var(--red-ink); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 30px 40px;
+    text-align: center;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--rule);
+  }
+  footer a { color: var(--red-ink); text-decoration: none; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    grid-column: 1 / -1; text-align: center;
+    padding: 60px 20px; color: var(--ink-faded);
+  }
+  .empty-state .empty-icon { font-size: 48px; opacity: 0.3; margin-bottom: 14px; }
+  .empty-state p { font-family: 'IM Fell English', serif; font-style: italic; }
+
+  /* ── COUNT ── */
+  .result-count {
+    font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--rule);
+  }
+</style>
+</head>
+<body>
+
+<div class="page-border"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-rule">
+    <div class="header-ornament">✦ ✦ ✦</div>
+  </div>
+  <p class="collection-label">Private Archive &amp; Repository</p>
+  <h1>Los Angeles<br><em>Cartographic Collection</em></h1>
+  <p class="header-sub">Street-level maps &amp; ephemera of the City of Angels, antecedent to 1930</p>
+  <div class="header-meta">
+    <span id="total-count">43 items catalogued</span>
+    <span>Est. Repository 2024</span>
+    <span>Los Angeles, California</span>
+  </div>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search-input" placeholder="Search by title, year, district…">
+  </div>
+  <div class="filter-tags" id="filter-tags">
+    <button class="tag-btn active" data-filter="all">All Items</button>
+    <button class="tag-btn" data-filter="Map">Maps</button>
+    <button class="tag-btn" data-filter="Ephemera">Ephemera</button>
+    <button class="tag-btn" data-filter="Atlas">Atlases</button>
+    <button class="tag-btn" data-filter="Stock">Stocks &amp; Bonds</button>
+    <button class="tag-btn" data-filter="recent">Recent</button>
+  </div>
+  <div style="display:flex; align-items:center; gap:14px;">
+    <span class="result-count" id="result-count"></span>
+    <div class="view-toggle">
+      <button class="view-btn active" id="grid-btn" title="Grid view">⊞</button>
+      <button class="view-btn" id="list-btn" title="List view">☰</button>
+    </div>
+  </div>
+</div>
+
+<!-- DIVIDER -->
+<div class="section-divider">
+  <span class="divider-text">Collection Items</span>
+</div>
+
+<!-- GRID -->
+<div class="collection-grid" id="collection-grid"></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <div class="lightbox-img" id="lb-image">
+      <div class="img-placeholder">
+        <div class="map-icon">🗺</div>
+        <span>No image on file</span>
+      </div>
+    </div>
+    <div class="lightbox-info">
+      <p class="lb-collection-label">Los Angeles Cartographic Archive</p>
+      <h2 class="lb-title" id="lb-title"></h2>
+      <p class="lb-year" id="lb-year"></p>
+      <div class="lb-rule"></div>
+      <p class="lb-desc" id="lb-desc"></p>
+      <div class="lb-meta" id="lb-meta"></div>
+      <div id="lb-source" class="lb-source"></div>
+      <div class="lb-tags" id="lb-tags"></div>
+    </div>
+    <button class="lightbox-close" id="lb-close">✕</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Los Angeles Cartographic Archive &nbsp;·&nbsp; Pre-1930 Street Maps &amp; Ephemera &nbsp;·&nbsp; Private Collection</p>
+</footer>
+
+<script>
+// ── COLLECTION DATA ──
+const COLLECTION = [
+  {
+    id: 1,
+    title: "The Complete Atlas of Los Angeles — 44 Cloth Pages, Hand Colored",
+    year: "1910",
+    type: "Atlas",
+    publisher: "Baist Atlas",
+    dimensions: '34" × 24" × 5"',
+    accession: "LAC-1910-001",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "A monumental cloth-bound atlas of 44 hand-colored pages documenting the full street grid and property ownership of Los Angeles at the dawn of the city's great expansion. Each plate is meticulously rendered and hand-colored, representing the city block by block.",
+    tags: ["Atlas", "Hand Colored", "Baist"],
+    imageUrl: ""
+  },
+  {
+    id: 2,
+    title: "Property Book of Los Angeles City",
+    year: "1917",
+    type: "Atlas",
+    publisher: "The Los Angeles Map and Address Company",
+    dimensions: '11" × 14.5" × 5"',
+    accession: "LAC-1917-002",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A comprehensive property reference atlas issued by the Los Angeles Map and Address Company, documenting parcel ownership, lot numbers, and street addresses across the city during the mid-1910s.",
+    tags: ["Atlas", "Property", "Address"],
+    imageUrl: ""
+  },
+  {
+    id: 3,
+    title: "Front Page",
+    year: "1873",
+    type: "Ephemera",
+    publisher: "Evening Express",
+    dimensions: '22" × 16"',
+    accession: "LAC-1873-003",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A broadsheet front page from the Evening Express, one of the earliest Los Angeles newspapers. A rare surviving example of the city's 19th-century print culture, documenting life in the young pueblo-turned-American city.",
+    tags: ["Newspaper", "1870s", "Press"],
+    imageUrl: ""
+  },
+  {
+    id: 4,
+    title: "View of Main Street with Article",
+    year: "1890",
+    type: "Ephemera",
+    publisher: "Harper's Bazar",
+    dimensions: '16" × 11"',
+    accession: "LAC-1890-004",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A printed page from Harper's Bazar featuring an engraved view of Main Street, Los Angeles, accompanied by a descriptive article. Documents the city's commercial streetscape during the post-boom consolidation period.",
+    tags: ["Main Street", "Harper's", "Engraving"],
+    imageUrl: ""
+  },
+  {
+    id: 5,
+    title: "Sketch of Los Angeles and Article",
+    year: "1899",
+    type: "Ephemera",
+    publisher: "Harper's Weekly",
+    dimensions: '17" × 11"',
+    accession: "LAC-1899-005",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A full-page illustrated spread from Harper's Weekly including a detailed sketch of the Los Angeles cityscape and an accompanying editorial piece, presenting the city to an eastern national readership.",
+    tags: ["Harper's", "Illustration", "1890s"],
+    imageUrl: ""
+  },
+  {
+    id: 6,
+    title: "Single Photo and Article of Main Street",
+    year: "1899",
+    type: "Ephemera",
+    publisher: "Harper's Bazar",
+    dimensions: '12" × 10.5"',
+    accession: "LAC-1899-006",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A photographic reproduction and article from Harper's Bazar documenting Main Street at the turn of the century. An early example of halftone photographic reproduction in national print media.",
+    tags: ["Main Street", "Photography", "Harper's"],
+    imageUrl: ""
+  },
+  {
+    id: 7,
+    title: "Annual Midtown Numbers Pictorial",
+    year: "1913",
+    type: "Ephemera",
+    publisher: "The Los Angeles Times",
+    dimensions: '23" × 17"',
+    accession: "LAC-1913-009",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A large-format annual pictorial supplement issued by the Los Angeles Times, showcasing midtown statistics and civic progress through illustrations, photographs, and infographics in the tradition of booster journalism.",
+    tags: ["Times", "Pictorial", "Midtown"],
+    imageUrl: ""
+  },
+  {
+    id: 8,
+    title: "Pictorial City Sheet",
+    year: "1914",
+    type: "Ephemera",
+    publisher: "The Los Angeles Times",
+    dimensions: '34" × 22"',
+    accession: "LAC-1914-010",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A large broadsheet pictorial issued by the Los Angeles Times, combining cityscape illustrations, statistical data, and promotional imagery to celebrate Los Angeles's growth on the eve of World War I.",
+    tags: ["Times", "Pictorial", "Broadsheet"],
+    imageUrl: ""
+  },
+  {
+    id: 9,
+    title: "Brochure with Photos and Map",
+    year: "1930",
+    type: "Ephemera",
+    publisher: "Hotel Stillwell",
+    dimensions: '6" × 7"',
+    accession: "LAC-1930-011",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A guest brochure from the Hotel Stillwell on Grand Avenue, featuring interior photographs, a small city map showing the hotel's location relative to downtown attractions, and fare information.",
+    tags: ["Hotel", "Brochure", "Downtown"],
+    imageUrl: ""
+  },
+  {
+    id: 10,
+    title: "Los Angeles City Map Travel Brochure",
+    year: "1930",
+    type: "Ephemera",
+    publisher: "Hotel Savoy",
+    dimensions: '17½" × 5½"',
+    accession: "LAC-1930-012",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A fold-out travel brochure issued by the Hotel Savoy featuring a street map of central Los Angeles printed for the convenience of guests. A characteristic piece of 1930s hotel ephemera.",
+    tags: ["Hotel", "Brochure", "Street Map"],
+    imageUrl: ""
+  },
+  {
+    id: 11,
+    title: "4-Panel Folding Brochure — Mileage Chart & Maps",
+    year: "1940",
+    type: "Ephemera",
+    publisher: "Los Angeles CA Alligator Farm",
+    dimensions: '3¼" × 8"',
+    accession: "LAC-1940-013",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A tourist attraction brochure from the famous Los Angeles Alligator Farm in Lincoln Park, featuring a mileage chart, a small directional map, and illustrated panels. A delightful piece of roadside Americana.",
+    tags: ["Tourist", "Alligator Farm", "Roadside"],
+    imageUrl: ""
+  },
+  {
+    id: 12,
+    title: "Alexandria Hotel Baggage Label",
+    year: "1950",
+    type: "Ephemera",
+    publisher: "The Able Hotel Company",
+    dimensions: '6" × 3"',
+    accession: "LAC-1950-014",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A die-cut luggage label from the landmark Alexandria Hotel on Spring Street — once the social center of Los Angeles, host to presidents and film stars. A small but evocative piece of the city's golden-age hospitality culture.",
+    tags: ["Hotel", "Alexandria", "Spring Street"],
+    imageUrl: ""
+  },
+  {
+    id: 13,
+    title: "The City of Los Angeles — Drawn by Charles Graham",
+    year: "1765",
+    type: "Illustration",
+    publisher: "Harper's Weekly",
+    dimensions: '21.5" × 16"',
+    accession: "LAC-1765-015",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A large-format illustration of the Los Angeles cityscape drawn by Charles Graham and published in Harper's Weekly. Graham was one of the foremost illustrators of American cities in the late 19th century; this piece documents the city's early built environment with remarkable detail.",
+    tags: ["Graham", "Cityscape", "Harper's"],
+    imageUrl: ""
+  },
+  {
+    id: 14,
+    title: "Sketch of The Battle of Los Angeles",
+    year: "1867",
+    type: "Map",
+    publisher: "The President's Book of Ongoing Battles",
+    dimensions: '7" × 4"',
+    accession: "LAC-1867-016",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "A small but historically significant sketch map documenting troop positions and terrain features associated with a conflict in the Los Angeles area. Published in a military reference volume, this is among the earliest cartographic documents in the collection.",
+    tags: ["Military", "19th Century", "Sketch"],
+    imageUrl: ""
+  },
+  {
+    id: 15,
+    title: "Geological Map — Color",
+    year: "1903",
+    type: "Map",
+    publisher: "Field Operations Bureau of Soils, U.S. Dept. of Agriculture",
+    dimensions: '33" × 38"',
+    accession: "LAC-1903-017",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "A large full-color soil and geological survey map of the Los Angeles basin produced by the Bureau of Soils. Color-coded by soil type and agricultural classification. One of two copies in the collection — both photographed.",
+    tags: ["Geological", "USDA", "Soil Survey"],
+    imageUrl: ""
+  },
+  {
+    id: 16,
+    title: "Los Angeles Map with Location Finder",
+    year: "1905",
+    type: "Map",
+    publisher: "German American Trust Savings Bank",
+    dimensions: '17" × 13"',
+    accession: "LAC-1905-019",
+    imageUrl: "",
+    rumseyUrl: "https://archive.org/details/dr_e-z-guide-map-of-los-angeles-california-8497002",
+    photographed: true,
+    recent: false,
+    description: "A promotional street map issued by the German American Trust Savings Bank, featuring an alphanumeric location-finder grid for locating streets and businesses. An excellent example of bank-issued cartographic promotional material from the early city.",
+    tags: ["Banking", "Location Finder", "Street Map"],
+    imageUrl: ""
+  },
+  {
+    id: 17,
+    title: "Map and Street Railway Guide of Los Angeles",
+    year: "1907",
+    type: "Map",
+    publisher: "Security Savings Bank",
+    dimensions: '28" × 22"',
+    accession: "LAC-1907-020",
+    imageUrl: "",
+    rumseyUrl: "https://archive.org/details/dr_security-map-and-street-railway-guide-of-the-city-of-los-angeles-3032001",
+    photographed: true,
+    recent: false,
+    description: "A large street map with a comprehensive overlay of the electric streetcar and interurban railway lines, issued as a promotional piece by Security Savings Bank. Documents the full extent of the Pacific Electric and LA Railway networks at their early-century peak.",
+    tags: ["Streetcar", "Pacific Electric", "Banking"],
+    imageUrl: ""
+  },
+  {
+    id: 18,
+    title: "Atlas Map Plate — City Key",
+    year: "1913",
+    type: "Map",
+    publisher: "Baist Atlas",
+    dimensions: '34" × 24"',
+    accession: "LAC-1913-021",
+    imageUrl: "",
+    rumseyUrl: "https://archive.org/details/dr_covers-to-baists-real-estate-atlas-of-surveys-of-los-angeles-cal-compl-6812001",
+    photographed: true,
+    recent: false,
+    description: "The city key index plate from the 1913 Baist Real Estate Atlas of Los Angeles, showing the full plate grid and how individual map sheets tessellate across the metropolitan area. An essential reference plate for navigating the complete atlas.",
+    tags: ["Baist", "Atlas", "Index"],
+    imageUrl: ""
+  },
+  {
+    id: 19,
+    title: "Atlas Map Plate 2 — Historic Core",
+    year: "1913",
+    type: "Map",
+    publisher: "Baist Atlas",
+    dimensions: '34" × 24"',
+    accession: "LAC-1913-022",
+    imageUrl: "",
+    rumseyUrl: "https://archive.org/details/dr_title-page-to-baists-real-estate-atlas-of-surveys-of-los-angeles-cal-c-6812002",
+    photographed: true,
+    recent: false,
+    description: "Plate 2 from the 1913 Baist Atlas covering the historic core of Los Angeles — the original pueblo grid, the civic center area, and the dense commercial district along Spring, Main, and Broadway. Property ownership, lot dimensions, and building footprints are recorded.",
+    tags: ["Baist", "Historic Core", "Downtown"],
+    imageUrl: ""
+  },
+  {
+    id: 20,
+    title: "City of Los Angeles Center",
+    year: "1913",
+    type: "Map",
+    publisher: "Wagner and Debbs Geological",
+    dimensions: '6" × 8"',
+    accession: "LAC-1913-023",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "A compact geological survey map of central Los Angeles produced by Wagner and Debbs, showing subsurface features and topographic contours alongside the street grid. A rare example of private geological mapping of the urban core.",
+    tags: ["Geological", "Downtown", "Survey"],
+    imageUrl: ""
+  },
+  {
+    id: 21,
+    title: "Atlas Map Plate 16 & 38 — Hancock Park",
+    year: "1913",
+    type: "Map",
+    publisher: "Baist Atlas",
+    dimensions: '52" × 24"',
+    accession: "LAC-1913-024",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "A double-wide plate from the 1913 Baist Atlas covering the Hancock Park and Wilshire corridor areas. Lot lines and ownership details document the area before its development as one of the city's most prestigious residential districts.",
+    tags: ["Baist", "Hancock Park", "Wilshire"],
+    imageUrl: ""
+  },
+  {
+    id: 22,
+    title: "Atlas Map Plate 39 — Hollywood Cemetery",
+    year: "1913",
+    type: "Map",
+    publisher: "Baist Atlas",
+    dimensions: '34" × 24"',
+    accession: "LAC-1913-025",
+    imageUrl: "",
+    rumseyUrl: "https://archive.org/details/dr_plate-45-verso-los-angeles-california-6812055",
+    photographed: true,
+    recent: false,
+    description: "Plate 39 from the 1913 Baist Atlas covering the Hollywood Cemetery (now Hollywood Forever) and the surrounding blocks of early Hollywood. Property parcels and owners are recorded at a moment just before the film industry's arrival transformed the neighborhood.",
+    tags: ["Baist", "Hollywood", "Cemetery"],
+    imageUrl: ""
+  },
+  {
+    id: 23,
+    title: "Atlas Map Plate 15 — Westlake Park",
+    year: "1913",
+    type: "Map",
+    publisher: "Baist Atlas",
+    dimensions: '34" × 24"',
+    accession: "LAC-1913-026",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "Plate 15 from the 1913 Baist Atlas showing the Westlake Park district (now MacArthur Park) and its surrounding residential streets. Documents the park's original layout and the dense Craftsman-era residential fabric of the surrounding blocks.",
+    tags: ["Baist", "Westlake", "MacArthur Park"],
+    imageUrl: ""
+  },
+  {
+    id: 24,
+    title: "Railroad Route — Hicks to Los Angeles, Sheet 24",
+    year: "1915",
+    type: "Map",
+    publisher: "Geological Survey Guidebook of the Western United States — Santa Fe Route, GPO",
+    dimensions: '9" × 14"',
+    accession: "LAC-1915-027",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "Sheet 24 from the Government Printing Office guidebook documenting the Santa Fe Railway route through Southern California. Shows the rail corridor, grade crossings, and surrounding topography on the approach to Los Angeles.",
+    tags: ["Railroad", "Santa Fe", "GPO"],
+    imageUrl: ""
+  },
+  {
+    id: 25,
+    title: "Santa Fe Route Bulletin 613 — Sheet 24",
+    year: "1915",
+    type: "Map",
+    publisher: "U.S. Geological Survey",
+    dimensions: '14" × 9"',
+    accession: "LAC-1915-028",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A companion USGS map sheet to Bulletin 613 covering the Santa Fe Railway approach from Kansas through to Los Angeles. Part of the comprehensive federal survey of transcontinental rail corridors published during the Progressive Era.",
+    tags: ["Railroad", "USGS", "Santa Fe"],
+    imageUrl: ""
+  },
+  {
+    id: 26,
+    title: "Map of Los Angeles and Vicinity",
+    year: "1920",
+    type: "Map",
+    publisher: "Merchants National Bank",
+    dimensions: '28" × 21"',
+    accession: "LAC-1920-029",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "A large promotional map of Los Angeles and the surrounding region issued by the Merchants National Bank. Shows the expanded city limits following major annexations, with transportation lines, parks, and key civic institutions marked.",
+    tags: ["Banking", "Vicinity", "Annexation"],
+    imageUrl: ""
+  },
+  {
+    id: 27,
+    title: "Map of Los Angeles and Vicinity",
+    year: "1922",
+    type: "Map",
+    publisher: "George Cram",
+    dimensions: '15" × 11"',
+    accession: "LAC-1922-030",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "A commercially published map of Los Angeles and environs by the George Cram Company of Chicago, one of the leading American cartographic publishers of the era. Shows the growing metropolitan footprint and surrounding towns.",
+    tags: ["Cram", "Commercial", "Vicinity"],
+    imageUrl: ""
+  },
+  {
+    id: 28,
+    title: "Map of Los Angeles and Vicinity",
+    year: "1923",
+    type: "Map",
+    publisher: "Bekins Fireproof Storage",
+    dimensions: '16" × 18"',
+    accession: "LAC-1923-031",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "A promotional map issued by Bekins Fireproof Storage showing Los Angeles and the broader metropolitan region, with notations useful to movers and relocating residents. A vivid piece of commercial cartography from the 1920s boom.",
+    tags: ["Bekins", "Commercial", "1920s Boom"],
+    imageUrl: ""
+  },
+  {
+    id: 29,
+    title: "Full Color Map of Los Angeles",
+    year: "1923",
+    type: "Map",
+    publisher: "U.S. Dept. of the Interior — Geological Survey",
+    dimensions: '54" × 39"',
+    accession: "LAC-1923-032",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A very large full-color USGS topographic map of Los Angeles, one of the most detailed federal surveys of the city produced in this period. At 54 × 39 inches, it is among the largest items in the collection.",
+    tags: ["USGS", "Topographic", "Full Color"],
+    imageUrl: ""
+  },
+  {
+    id: 30,
+    title: "The Los Angeles Quadrangle",
+    year: "1928",
+    type: "Map",
+    publisher: "U.S. Dept. of the Interior",
+    dimensions: '16" × 22"',
+    accession: "LAC-1928-033",
+    imageUrl: "",
+    rumseyUrl: "https://ngmdb.usgs.gov/topoview/viewer/#14/34.0522/-118.2429",
+    photographed: false,
+    recent: false,
+    description: "The standard USGS 7.5-minute quadrangle map for the Los Angeles area, issued in 1928. Shows topographic contours, drainage, roads, and built features at a scale appropriate for detailed study of the urban landscape.",
+    tags: ["USGS", "Quadrangle", "Topographic"],
+    imageUrl: ""
+  },
+  {
+    id: 31,
+    title: "The Views of Los Angeles and Vicinity",
+    year: "1905",
+    type: "Photo Book",
+    publisher: "Los Angeles Chamber of Commerce",
+    dimensions: '9" × 6"',
+    accession: "LAC-1905-038",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A photographic booklet produced by the Los Angeles Chamber of Commerce to promote the city to potential investors and settlers. Features halftone photographs of civic buildings, parks, residential districts, and commercial streets.",
+    tags: ["Chamber of Commerce", "Photography", "Promotional"],
+    imageUrl: ""
+  },
+  {
+    id: 32,
+    title: "250 Shares — Citizens Security Company of Los Angeles",
+    year: "1905",
+    type: "Stock",
+    publisher: "Citizens Security Company of LA",
+    dimensions: '12" × 8"',
+    accession: "LAC-1905-039",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A beautifully engraved stock certificate for 250 shares of the Citizens Security Company of Los Angeles. Features elaborate vignette engravings and ornamental borders typical of the era's financial printing.",
+    tags: ["Stock Certificate", "Finance", "Engraving"],
+    imageUrl: ""
+  },
+  {
+    id: 33,
+    title: "10 Shares — Los Angeles Drug Company",
+    year: "1929",
+    type: "Stock",
+    publisher: "Los Angeles Drug Company",
+    dimensions: '11" × 9"',
+    accession: "LAC-1929-040",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A stock certificate for 10 shares of the Los Angeles Drug Company, issued in 1929 on the eve of the Great Depression. Printed with detailed engraved borders and corporate vignettes.",
+    tags: ["Stock Certificate", "Finance", "1929"],
+    imageUrl: ""
+  },
+  {
+    id: 34,
+    title: "100 Shares — Los Angeles-Vancouver Mines Limited",
+    year: "1930",
+    type: "Stock",
+    publisher: "Los Angeles-Vancouver Mines Limited",
+    dimensions: '11" × 9"',
+    accession: "LAC-1930-041",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A share certificate for a Los Angeles-registered mining company with Vancouver operations, reflecting the cross-border resource speculation common in the early Depression era.",
+    tags: ["Stock Certificate", "Mining", "Finance"],
+    imageUrl: ""
+  },
+  {
+    id: 35,
+    title: "Water Works Bond — 2 Bonds, Double Framed",
+    year: "1930",
+    type: "Stock",
+    publisher: "City of Los Angeles",
+    dimensions: '12" × 14"',
+    accession: "LAC-1930-042",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "Two City of Los Angeles municipal water works bonds, double-framed for display. These bonds financed the expansion of the Los Angeles Aqueduct water infrastructure during the growth boom.",
+    tags: ["Municipal Bond", "Water Works", "City of LA"],
+    imageUrl: ""
+  },
+  {
+    id: 36,
+    title: "Street Improvement Bond and Redemptions",
+    year: "1931",
+    type: "Stock",
+    publisher: "City of Los Angeles",
+    dimensions: '15" × 15"',
+    accession: "LAC-1931-043",
+    rumseyUrl: "",
+    photographed: false,
+    recent: false,
+    description: "A City of Los Angeles street improvement bond with attached redemption coupons intact. Documents the public financing of street paving and infrastructure improvements during the city's Depression-era public works programs.",
+    tags: ["Municipal Bond", "Street Improvement", "City of LA"],
+    imageUrl: ""
+  },
+  {
+    id: 37,
+    title: "Birdseye View of Los Angeles",
+    year: "1909",
+    type: "Map",
+    publisher: "Unknown",
+    dimensions: "—",
+    accession: "LAC-1909-046",
+    imageUrl: "",
+    rumseyUrl: "https://www.loc.gov/item/2005632465/",
+    photographed: true,
+    recent: false,
+    description: "An oblique birdseye view of Los Angeles circa 1909, showing the city from an elevated perspective. Documents the urban fabric at a pivotal moment of growth, with the downtown core and surrounding residential neighborhoods rendered in detail.",
+    tags: ["Bird's Eye", "Panoramic", "1900s"],
+    imageUrl: ""
+  },
+  {
+    id: 38,
+    title: "Dana Burke Map",
+    year: "—",
+    type: "Map",
+    publisher: "Unknown",
+    dimensions: "—",
+    accession: "LAC-0000-047",
+    rumseyUrl: "",
+    photographed: true,
+    recent: false,
+    description: "A map from or attributed to Dana Burke. Further research pending on date, publisher, and precise subject matter.",
+    tags: ["Research Pending"],
+    imageUrl: ""
+  },
+  // ── RECENT ACQUISITIONS ──
+  {
+    id: 39,
+    title: "Set of 4 Blueprints for Union Station",
+    year: "1919",
+    type: "Blueprint",
+    publisher: "Unknown",
+    dimensions: "—",
+    accession: "LAC-1919-R01",
+    rumseyUrl: "",
+    photographed: false,
+    recent: true,
+    description: "A remarkable set of four architectural blueprints for Los Angeles Union Passenger Terminal, predating the station's eventual construction in 1939. These 1919 drawings represent an earlier design phase and are exceptional primary-source documents of the station's long planning history.",
+    tags: ["Union Station", "Blueprint", "Architecture"],
+    imageUrl: ""
+  },
+  {
+    id: 40,
+    title: "Hand Compiled Map of the Broadway Theater District",
+    year: "1931",
+    type: "Map",
+    publisher: "Unknown",
+    dimensions: "—",
+    accession: "LAC-1931-R02",
+    rumseyUrl: "",
+    photographed: false,
+    recent: true,
+    description: "A hand-drawn and compiled map of the Broadway Theater District during its golden era, when Broadway was the most concentrated theater district outside of New York City. Likely created for promotional or planning purposes.",
+    tags: ["Broadway", "Theater", "Hand Drawn"],
+    imageUrl: ""
+  },
+  {
+    id: 41,
+    title: "Los Angeles as It Appeared in 1871",
+    year: "1912",
+    type: "Map",
+    publisher: "Unknown",
+    dimensions: "—",
+    accession: "LAC-1912-R03",
+    rumseyUrl: "",
+    photographed: false,
+    recent: true,
+    description: "A retrospective map published in 1912 reconstructing the street layout, property boundaries, and key landmarks of Los Angeles as they existed in 1871, forty years prior. A valuable document for understanding the city's early physical development.",
+    tags: ["Historical Reconstruction", "1871", "Pueblo"],
+    imageUrl: ""
+  },
+  {
+    id: 42,
+    title: "Map of the 1932 Olympics",
+    year: "1932",
+    type: "Map",
+    publisher: "Unknown",
+    dimensions: "—",
+    accession: "LAC-1932-R04",
+    rumseyUrl: "",
+    photographed: false,
+    recent: true,
+    description: "A map produced in connection with the Xth Olympiad, held in Los Angeles in 1932 — the first Summer Olympics held in the United States since 1904. Shows venue locations, transportation routes, and the Olympic Village.",
+    tags: ["Olympics", "1932", "Venues"],
+    imageUrl: ""
+  },
+  {
+    id: 43,
+    title: "Map Ordering the Demolition of the Venice Pier",
+    year: "1930",
+    type: "Map",
+    publisher: "Unknown",
+    dimensions: "—",
+    accession: "LAC-1930-R05",
+    rumseyUrl: "",
+    photographed: false,
+    recent: true,
+    description: "An extraordinary document: a map accompanying or constituting the official order for the demolition of the Venice Pier. A primary-source record of the end of one of the iconic features of the Venice oceanfront.",
+    tags: ["Venice", "Pier", "Demolition Order"],
+    imageUrl: ""
+  }
+];
+
+// ── STATE ──
+let activeFilter = "all";
+let activeView   = "grid";
+let searchQuery  = "";
+
+// ── RENDER ──
+function render() {
+  const grid = document.getElementById("collection-grid");
+  let items = COLLECTION;
+
+  if (activeFilter === "recent") {
+    items = items.filter(i => i.recent);
+  } else if (activeFilter !== "all") {
+    items = items.filter(i => i.type === activeFilter);
+  }
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    items = items.filter(i =>
+      i.title.toLowerCase().includes(q) ||
+      i.year.includes(q) ||
+      i.description.toLowerCase().includes(q) ||
+      i.tags.some(t => t.toLowerCase().includes(q)) ||
+      (i.publisher || "").toLowerCase().includes(q)
+    );
+  }
+
+  document.getElementById("result-count").textContent =
+    items.length + " item" + (items.length !== 1 ? "s" : "");
+
+  grid.innerHTML = "";
+
+  if (items.length === 0) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🗺</div>
+      <p>No items match the current search or filter.</p>
+    </div>`;
+    return;
+  }
+
+  items.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "map-card";
+    card.innerHTML = `
+      <div class="card-image">
+        ${item.imageUrl
+          ? `<img src="${item.imageUrl}" alt="${item.title}">`
+          : `<div class="img-placeholder"><div class="map-icon">🗺</div><span>Add scan to images/</span></div>`
+        }
+        <div class="card-type-badge">${item.type}</div>
+        ${item.photographed ? `<div class="card-photo-badge">📷 Photographed</div>` : ""}
+        ${item.recent ? `<div class="card-recent-badge">Recent Acquisition</div>` : ""}
+      </div>
+      <div class="card-body">
+        <p class="card-year">circa ${item.year}</p>
+        <h3 class="card-title">${item.title}</h3>
+        <p class="card-desc">${item.description}</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-tags">${item.tags.slice(0,2).map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
+        <span class="card-accession">${item.accession}</span>
+      </div>`;
+    card.addEventListener("click", () => openLightbox(item));
+    grid.appendChild(card);
+  });
+}
+
+// ── LIGHTBOX ──
+function openLightbox(item) {
+  document.getElementById("lb-title").textContent = item.title;
+  document.getElementById("lb-year").textContent  = "circa " + item.year + (item.publisher ? "  ·  " + item.publisher : "");
+  document.getElementById("lb-desc").textContent  = item.description;
+
+  const imgEl = document.getElementById("lb-image");
+  imgEl.innerHTML = item.imageUrl
+    ? `<img src="${item.imageUrl}" alt="${item.title}">`
+    : `<div class="img-placeholder"><div class="map-icon">🗺</div><span>Add scan to images/</span></div>`;
+
+  const meta = [
+    ["Type",         item.type],
+    ["Year",         item.year],
+    ["Publisher",    item.publisher  || "—"],
+    ["Dimensions",   item.dimensions || "—"],
+    ["Photographed", item.photographed ? "Yes — in archive" : "Not yet"],
+    ["Accession",    item.accession],
+  ];
+  document.getElementById("lb-meta").innerHTML = meta
+    .map(([k,v]) => `<div class="lb-meta-row"><span class="lb-meta-key">${k}</span><span class="lb-meta-val">${v}</span></div>`)
+    .join("");
+
+  // Source link
+  const lbSource = document.getElementById("lb-source");
+  if (item.rumseyUrl) {
+    lbSource.innerHTML = `<a href="${item.rumseyUrl}" target="_blank" rel="noopener" class="lb-source-link">View on ${item.rumseyUrl.includes('loc.gov') ? 'Library of Congress' : item.rumseyUrl.includes('usgs') || item.rumseyUrl.includes('ngmdb') ? 'USGS TopoView' : 'David Rumsey Collection'} ↗</a>`;
+    lbSource.style.display = 'block';
+  } else {
+    lbSource.style.display = 'none';
+  }
+
+  document.getElementById("lb-tags").innerHTML =
+    item.tags.map(t => `<span class="lb-tag">${t}</span>`).join("");
+
+  document.getElementById("lightbox").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeLightbox() {
+  document.getElementById("lightbox").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+// ── EVENTS ──
+document.getElementById("lb-close").addEventListener("click", closeLightbox);
+document.getElementById("lightbox").addEventListener("click", e => {
+  if (e.target === document.getElementById("lightbox")) closeLightbox();
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeLightbox(); });
+
+document.getElementById("search-input").addEventListener("input", e => {
+  searchQuery = e.target.value.trim();
+  render();
+});
+
+document.getElementById("filter-tags").addEventListener("click", e => {
+  if (!e.target.classList.contains("tag-btn")) return;
+  document.querySelectorAll(".tag-btn").forEach(b => b.classList.remove("active"));
+  e.target.classList.add("active");
+  activeFilter = e.target.dataset.filter;
+  render();
+});
+
+document.getElementById("grid-btn").addEventListener("click", () => {
+  activeView = "grid";
+  document.getElementById("collection-grid").classList.remove("list-view");
+  document.getElementById("grid-btn").classList.add("active");
+  document.getElementById("list-btn").classList.remove("active");
+});
+document.getElementById("list-btn").addEventListener("click", () => {
+  activeView = "list";
+  document.getElementById("collection-grid").classList.add("list-view");
+  document.getElementById("list-btn").classList.add("active");
+  document.getElementById("grid-btn").classList.remove("active");
+});
+
+// ── INIT ──
+render();
+</script>
+</body>
+</html>
